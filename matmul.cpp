@@ -60,8 +60,9 @@ int main(int argc, char **argv) {
   float* const mat2 = (float *)aligned_alloc(alignment, size2 * pitch2 * sizeof(float));
   float* const mat3 = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
   //float* const mat3_g1 = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
-  float* const mat3_g2 = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
+  //float* const mat3_g2 = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
   float* const mat3_g3 = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
+  float* const mat3_g4 = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
   initialize_matrix(mat1, size1, size2, pitch1);
   initialize_matrix(mat2, size2, size3, pitch2);
   boost::timer::cpu_timer timer;
@@ -72,27 +73,39 @@ int main(int argc, char **argv) {
   //timer.start();
   //matmul_gpu_ver1(mat1, mat2, mat3_g1, size1, size2, size3, pitch1, pitch2);
   //std::fprintf(stderr, "gpu1: time:%s", timer.format().c_str());
-  timer.start();
-  matmul_gpu_ver2(mat1, mat2, mat3_g2, size1, size2, size3, pitch1, pitch2);
-  std::fprintf(stderr, "gpu2: time:%s", timer.format().c_str());
+  //timer.start();
+  //matmul_gpu_ver2(mat1, mat2, mat3_g2, size1, size2, size3, pitch1, pitch2);
+  //std::fprintf(stderr, "gpu2: time:%s", timer.format().c_str());
   timer.start();
   matmul_gpu_ver3(mat1, mat2, mat3_g3, size1, size2, size3, pitch1, pitch2);
   std::fprintf(stderr, "gpu3: time:%s", timer.format().c_str());
+  timer.start();
+  matmul_gpu_ver4(mat1, mat2, mat3_g4, size1, size2, size3, pitch1, pitch2);
+  std::fprintf(stderr, "gpu4: time:%s", timer.format().c_str());
   float d;
   //d = compare(mat3_g1, mat3, size1, size3, pitch2);
   //std::fprintf(stderr, "diff cpu-gpu1: %f\n", d);
-  d = compare(mat3_g2, mat3, size1, size3, pitch2);
-  std::fprintf(stderr, "diff cpu-gpu2: %f\n", d);
+  //d = compare(mat3_g2, mat3, size1, size3, pitch2);
+  //std::fprintf(stderr, "diff cpu-gpu2: %f\n", d);
   d = compare(mat3_g3, mat3, size1, size3, pitch2);
   std::fprintf(stderr, "diff cpu-gpu3: %f\n", d);
+  d = compare(mat3_g4, mat3, size1, size3, pitch2);
+  std::fprintf(stderr, "diff cpu-gpu4: %f\n", d);
   if (verify) {
     fprintf(stderr, "Verify start\n");
     float* const mat3_naive = (float *)aligned_alloc(alignment, size1 * pitch2 * sizeof(float));
     matmul_naive(mat1, mat2, mat3_naive, size1, size2, size3, pitch1, pitch2);
     d = compare(mat3, mat3_naive, size1, size3, pitch2);
     std::fprintf(stderr, "diff cpu: %f\n", d);
-    d = compare(mat3_g3, mat3_naive, size1, size3, pitch2);
+    d = compare(mat3_g4, mat3_naive, size1, size3, pitch2);
     std::fprintf(stderr, "diff gpu: %f\n", d);
   }
+  free(mat1);
+  free(mat2);
+  free(mat3);
+  //free(mat3_g1);
+  //free(mat3_g2);
+  free(mat3_g3);
+  free(mat3_g4);
   return 0;
 }

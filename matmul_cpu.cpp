@@ -9,7 +9,8 @@
 
 constexpr size_t block_sizei = 128;
 constexpr size_t block_sizej = 48;
-constexpr size_t block_sizek = 32;
+constexpr size_t block_sizek = 64;
+// hard-coded
 constexpr size_t block_sizej2 = 24;
 
 void matmul_block(const float* const mat1, const float* const buf, float* const mat3,
